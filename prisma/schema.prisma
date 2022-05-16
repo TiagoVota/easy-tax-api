@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CategoryName {
+  Stock
+  FII
+  BDR
+  ETF
+}
+
+enum TypeName {
+  buy
+  sell
+}
+
+model Health {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  @@map("health")
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique @db.VarChar(80)
+  password String  @db.VarChar(80)
+  orders   Order[]
+
+  @@map("users")
+}
+
+model Category {
+  id      Int          @id @default(autoincrement())
+  name    CategoryName @unique
+  tickers Ticker[]
+
+  @@map("categories")
+}
+
+model Company {
+  id      Int      @id @default(autoincrement())
+  name    String   @unique @db.VarChar(80)
+  cnpj    String   @db.VarChar(20)
+  tickers Ticker[]
+
+  @@map("companies")
+}
+
+model Ticker {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique @db.VarChar(10)
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  company    Company  @relation(fields: [companyId], references: [id])
+  companyId  Int
+  orders     Order[]
+
+  @@map("tickers")
+}
+
+model Broker {
+  id     Int     @id @default(autoincrement())
+  name   String  @db.VarChar(80)
+  cnpj   String  @unique @db.VarChar(20)
+  orders Order[]
+
+  @@map("brokers")
+}
+
+model Type {
+  id     Int      @id @default(autoincrement())
+  name   TypeName @unique
+  orders Order[]
+
+  @@map("types")
+}
+
+model Order {
+  id       Int      @id @default(autoincrement())
+  user     User     @relation(fields: [userId], references: [id])
+  userId   Int
+  ticker   Ticker   @relation(fields: [tickerId], references: [id])
+  tickerId Int
+  type     Type     @relation(fields: [typeId], references: [id])
+  typeId   Int
+  price    Int
+  quantity Int
+  broker   Broker   @relation(fields: [brokerId], references: [id])
+  brokerId Int
+  date     DateTime @default(now()) @db.Timestamptz()
+
+  @@map("orders")
+}

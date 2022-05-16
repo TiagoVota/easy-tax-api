@@ -1,0 +1,21 @@
+name: Pull Request
+on: [pull_request]
+jobs:
+  PullRequest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_POSTGRES_USER: "postgres"
+          envkey_POSTGRES_PASSWORD: "senha"
+          envkey_POSTGRES_DB: "easy_tax_test"
+          envkey_DATABASE_URL: "postgres://postgres:senha@db:5432/easy_tax_test"
+          envkey_JWT_SECRET: "ARTpX#vz=$g78+^Kl799HxrtV$AeR76g!EFVAjD%M*"
+          file_name: .env.test
+      - name: Run tests
+        run: docker-compose -f docker-compose-test.yml up --build
+      - name: Build
+        run: npm i && npm run build
