@@ -31,6 +31,7 @@ model Health {
 
 model User {
   id       Int     @id @default(autoincrement())
+	name     String  @db.VarChar(80)
   email    String  @unique @db.VarChar(80)
   password String  @db.VarChar(80)
   orders   Order[]
