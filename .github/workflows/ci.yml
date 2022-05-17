@@ -20,4 +20,4 @@ jobs:
       - name: Build
         run: npm i && npm run build
       - name: Create database
-        run: npx prisma db push
+        run: dotenv -e .env.test npx prisma db push
