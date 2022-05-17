@@ -16,7 +16,8 @@
     "git:update": "git add . && git status",
     "prisma:view-db": "npx prisma studio",
     "prisma:format": "npx prisma format",
-    "prisma:migrate": "npx prisma migrate dev"
+    "prisma:migrate": "npx prisma migrate dev",
+		"prisma:push-test": "dotenv -e .env.test npx prisma db push"
   },
   "keywords": [],
   "author": "",

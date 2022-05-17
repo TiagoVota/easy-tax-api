@@ -19,5 +19,3 @@ jobs:
         run: docker-compose -f docker-compose-test.yml up --build
       - name: Build
         run: npm i && npm run build
-      - name: Create database
-        run: dotenv -e .env.test npx prisma db push
