@@ -4,14 +4,14 @@ import * as schemaValidation from '../middlewares/schemaValidation/index.js'
 
 import { authController } from '../controllers/index.js'
 
-import { userSchema } from '../schemas/userSchema.js'
+import { userSchema, loginSchema } from '../schemas/userSchema.js'
 
 
 const authRouter = Router()
 
 authRouter.post(
 	'/login',
-	schemaValidation.bodyMiddleware(userSchema),
+	schemaValidation.bodyMiddleware(loginSchema),
 	authController.loginUser
 )
 authRouter.post(

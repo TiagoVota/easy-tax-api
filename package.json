@@ -16,7 +16,8 @@
     "git:update": "git add . && git status",
     "prisma:view-db": "npx prisma studio",
     "prisma:format": "npx prisma format",
-    "prisma:migrate": "npx prisma migrate dev"
+    "prisma:migrate": "npx prisma migrate dev",
+		"prisma:push-test": "dotenv -e .env.test npx prisma db push"
   },
   "keywords": [],
   "author": "",
@@ -41,6 +42,7 @@
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.23.0",
     "@typescript-eslint/parser": "^5.23.0",
+    "dotenv-cli": "^5.1.0",
     "eslint": "^8.15.0",
     "husky": "^8.0.1",
     "jest": "^27.0.0",

@@ -9,21 +9,21 @@ import {
 	NoUserError,
 } from '../errors/index.js'
 
-import { User, UserData } from '../interfaces/userInterface.js'
+import { AuthUserData, User, UserData } from '../interfaces/userInterface.js'
 
 
-const createUser = async ({ email, password }: UserData) => {
+const createUser = async ({ name, email, password }: UserData) => {
 	await validateExistentUser(email)
 
 	const hashPassword = encryptValue(password)
 
-	const user = await insertUser({ email, password: hashPassword })
+	const user = await insertUser({ name, email, password: hashPassword })
 	
 	return user
 }
 
 
-const AuthorizeUser = async ({ email, password }: UserData) => {
+const AuthorizeUser = async ({ email, password }: AuthUserData) => {
 	const user = await userRepository.findByEmail(email)
 
 	validateUser(user, email)
