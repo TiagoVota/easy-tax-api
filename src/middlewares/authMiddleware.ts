@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 
 import { verifyToken } from '../utils/authorizations.js'
 
-import { UserInfo } from '../interfaces/userInterface.js'
+import { TokenInfo } from '../interfaces/userInterface.js'
 
 import { AuthError } from '../errors/index.js'
 
@@ -18,7 +18,7 @@ const authMiddleware = async (
 	try {
 		if (!token) throw new AuthError()
 
-		const user = verifyToken(token) as UserInfo
+		const user = verifyToken(token) as TokenInfo
 		if (!user) throw new AuthError()
 	
 		res.locals.user = user

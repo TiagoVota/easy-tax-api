@@ -2,6 +2,7 @@ import { userRepository } from '../repositories/index.js'
 
 import { encryptValue, isValidEncrypt } from '../utils/encryptor.js'
 import { generateToken } from '../utils/authorizations.js'
+import { formatTokenData } from './helpers/formatUserHelper.js'
 
 import {
 	ExistentUserError,
@@ -17,7 +18,11 @@ const createUser = async ({ name, email, password }: UserData) => {
 
 	const hashPassword = encryptValue(password)
 
-	const user = await insertUser({ name, email, password: hashPassword })
+	const user = await insertUser({
+		name,
+		email: email.toLowerCase(),
+		password: hashPassword
+	})
 	
 	return user
 }
@@ -29,7 +34,7 @@ const AuthorizeUser = async ({ email, password }: AuthUserData) => {
 	validateUser(user, email)
 	validatePassword(password, user.password)
 
-	const token = generateToken({ userId: user.id, email })
+	const token = generateToken(formatTokenData(user))
 
 	return { token }
 }

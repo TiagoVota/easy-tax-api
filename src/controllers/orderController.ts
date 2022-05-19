@@ -2,6 +2,9 @@ import { NextFunction, Request, Response } from 'express'
 
 import { orderService } from '../services/index.js'
 
+import { TokenInfo } from '../interfaces/userInterface.js'
+import { BodyOrderData } from '../interfaces/orderInterface.js'
+
 
 const getCreateOrderInfo = async (
 	req: Request,
@@ -19,6 +22,26 @@ const getCreateOrderInfo = async (
 }
 
 
+const createOrder = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const user = res.locals.user as TokenInfo
+	const order = req.body as BodyOrderData
+
+	try {
+		const createdOrder = await orderService.createOrder({ user, order })
+
+		return res.status(201).send(createdOrder)
+
+	} catch (error) {
+		next(error)
+	}
+}
+
+
 export {
 	getCreateOrderInfo,
+	createOrder,
 }

@@ -3,6 +3,7 @@ import { userRepository } from './userRepository.js'
 import { tickerRepository } from './tickerRepository.js'
 import { typeRepository } from './typeRepository.js'
 import { brokerRepository } from './brokerRepository.js'
+import { orderRepository } from './orderRepository.js'
 
 
 export {
@@ -11,4 +12,5 @@ export {
 	tickerRepository,
 	typeRepository,
 	brokerRepository,
+	orderRepository,
 }

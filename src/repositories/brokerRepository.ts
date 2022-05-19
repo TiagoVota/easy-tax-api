@@ -8,8 +8,20 @@ const findAll = async () => {
 }
 
 
+const findById = async (id: number) => {	
+	const broker = await prisma.broker.findUnique({
+		where: {
+			id,
+		},
+	})
+
+	return broker
+}
+
+
 const brokerRepository = {
 	findAll,
+	findById,
 }
 export {
 	brokerRepository

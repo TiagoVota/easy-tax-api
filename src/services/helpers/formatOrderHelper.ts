@@ -17,7 +17,6 @@ const formatTickersData = (tickersData: Ticker[]) => {
 }
 
 
-
 const formatBrokersData = (brokersData: Broker[]) => {
 	const formatBrokerData = (brokerData: Broker) => {
 		const formatBrokerData = { ...brokerData }

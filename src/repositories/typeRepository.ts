@@ -8,8 +8,20 @@ const findAll = async () => {
 }
 
 
+const findById = async (id: number) => {	
+	const type = await prisma.type.findUnique({
+		where: {
+			id,
+		},
+	})
+
+	return type
+}
+
+
 const typeRepository = {
 	findAll,
+	findById,
 }
 export {
 	typeRepository
