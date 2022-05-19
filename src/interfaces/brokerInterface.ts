@@ -5,5 +5,6 @@ type BrokerInsertData = Omit<Broker, 'id'>
 
 
 export {
+	Broker,
 	BrokerInsertData,
 }

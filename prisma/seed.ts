@@ -101,7 +101,9 @@ const main = async () => {
 
 	// Upsert tickers
 	const categories = await prisma.category.findMany()
-	const stockCategory = categories.find(category => category.name === categoryList[0])
+	const stockCategory = categories.find(category => {
+		return category.name === categoryList[0]
+	})
 	const stockCategoryId = stockCategory.id
 
 	const companies = await prisma.company.findMany()
