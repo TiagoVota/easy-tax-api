@@ -97,7 +97,7 @@ model Order {
   quantity Int
   broker   Broker   @relation(fields: [brokerId], references: [id])
   brokerId Int
-  date     DateTime @default(now()) @db.Timestamptz()
+  date     DateTime @default(now()) @db.Timestamp()
 
   @@map("orders")
 }

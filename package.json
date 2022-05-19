@@ -17,7 +17,9 @@
     "prisma:view-db": "npx prisma studio",
     "prisma:format": "npx prisma format",
     "prisma:migrate": "npx prisma migrate dev",
-		"prisma:push-test": "dotenv -e .env.test npx prisma db push"
+		"prisma:push-test": "dotenv -e .env.test npx prisma db push",
+		"seed": "ts-node prisma/seed.ts",
+		"seed:test": "dotenv -e .env.test ts-node prisma/seed.ts"
   },
   "keywords": [],
   "author": "",
