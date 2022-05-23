@@ -5,6 +5,8 @@ import {
 	orderRepository,
 } from '../repositories/index.js'
 
+import * as userService from './userService.js'
+
 import {
 	formatTickersData,
 	formatBrokersData,
@@ -15,11 +17,14 @@ import {
 	makeMeanPriceLists,
 	makePastYearsMeanPrices
 } from './helpers/irHelper.js'
+import { formatDate } from './helpers/dateHelper.js'
 
-import { InsertOrderInfo } from '../interfaces/orderInterface.js'
+import { InsertOrderInfo, Order } from '../interfaces/orderInterface.js'
 
 import {
+	ChangeOrderError,
 	NoBrokerError,
+	NoOrderError,
 	NoTickerError,
 	NoTypeError,
 } from '../errors/index.js'
@@ -76,12 +81,39 @@ const createOrder = async ({ user, order }: InsertOrderInfo) => {
 	const orderData = {
 		userId: user.id,
 		...order,
-		date:  new Date(order.date) || new Date()
+		date: formatDate(order.date)
 	}
 
 	const createdOrder = await orderRepository.create(orderData)
 
 	return createdOrder
+}
+
+
+const updateOrder = async (order: Order) => {
+	const existentOrder = await validateOrder(order.id)
+	validateUserOrder(order.userId, existentOrder.userId)
+	await validateBroker(order.brokerId)
+	await validateTicker(order.tickerId)
+	await validateType(order.typeId)
+	await userService.validateUserById(order.userId)
+
+	const updatedOrder = await orderRepository.update({
+		...order,
+		date: formatDate(order.date)
+	})
+
+	return updatedOrder
+}
+
+
+const deleteOrder = async (orderId: number, userId: number) => {
+	const order = await validateOrder(orderId)
+	validateUserOrder(userId, order.userId)
+
+	const deletedOrder = await orderRepository.deleteOne(orderId)
+
+	return deletedOrder
 }
 
 
@@ -106,10 +138,23 @@ const validateType = async (typeId: number) => {
 	return type
 }
 
+const validateOrder = async (orderId: number) => {
+	const order = await orderRepository.findById(orderId)
+	if (!order) throw new NoOrderError(orderId)
+
+	return order
+}
+
+const validateUserOrder = (userId: number, userOrderId: number) => {
+	if (userId !== userOrderId) throw new ChangeOrderError(userId)
+}
+
 
 export {
 	getOrders,
 	makeCreateOrderInfo,
 	makeOrdersIR,
 	createOrder,
+	updateOrder,
+	deleteOrder,
 }

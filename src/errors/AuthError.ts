@@ -10,4 +10,3 @@ class AuthError extends UnauthorizedError {
 
 
 export default AuthError
-

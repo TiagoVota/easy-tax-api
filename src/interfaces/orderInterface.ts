@@ -12,6 +12,7 @@ interface InsertOrderInfo {
 
 
 export {
+	Order,
 	CreateOrderData,
 	BodyOrderData,
 	InsertOrderInfo,

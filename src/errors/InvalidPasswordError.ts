@@ -10,4 +10,3 @@ class InvalidPasswordError extends UnauthorizedError {
 
 
 export default InvalidPasswordError
-

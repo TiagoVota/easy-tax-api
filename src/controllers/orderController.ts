@@ -77,9 +77,51 @@ const createOrder = async (
 }
 
 
+const modifyOrder = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const user = res.locals.user as TokenInfo
+	const orderId = req.params.orderId
+	const orderInfo = req.body as BodyOrderData
+
+	try {
+		const order = { id: Number(orderId), ...orderInfo, userId: user.id }
+		const updatedOrder = await orderService.updateOrder(order)
+
+		return res.status(200).send(updatedOrder)
+
+	} catch (error) {
+		next(error)
+	}
+}
+
+
+const removeOrder = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const user = res.locals.user as TokenInfo
+	const orderId = req.params.orderId
+
+	try {
+		const deletedOrder = await orderService.deleteOrder(Number(orderId), user.id)
+
+		return res.status(200).send(deletedOrder)
+
+	} catch (error) {
+		next(error)
+	}
+}
+
+
 export {
 	getUserOrders,
 	getCreateOrderInfo,
 	getOrdersIR,
 	createOrder,
+	modifyOrder,
+	removeOrder,
 }
