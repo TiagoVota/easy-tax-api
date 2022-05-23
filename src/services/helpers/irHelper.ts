@@ -10,6 +10,7 @@ const getMeanPricesAndSells = (ordersList: any[]) => {
 	const { BUY_CORRECTION, SELL_CORRECTION } = makeCorrection()
 
 	const meanPrices = {}
+	const sellOrders = {}
 
 	let previousYear = -Infinity
 	const meanPricesLastYears = {}
@@ -48,15 +49,24 @@ const getMeanPricesAndSells = (ordersList: any[]) => {
 		}
 
 		if (!isBuy) {
-			const lastMinPrice = actualTicker.totalPrice / actualTicker.quantity
+			const lastMeanPrice = actualTicker.totalPrice / actualTicker.quantity
 			actualTicker.quantity -= order.quantity
-			actualTicker.totalPrice -= (lastMinPrice * order.quantity) * SELL_CORRECTION
+			actualTicker.totalPrice -= (lastMeanPrice * order.quantity) * SELL_CORRECTION
+
+			if (!sellOrders[actualYear]) sellOrders[actualYear] = { orders: [] }
+			sellOrders[actualYear].orders.push({
+				ticker: order.ticker.name,
+				previousMeanPrice: lastMeanPrice,
+				sellMeanPrice: order.price,
+				sellQuantity: order.quantity,
+			})
 		}
 	})
 
 	return {
 		meanPrices,
 		meanPricesLastYears,
+		sellOrders,
 	}
 }
 
@@ -88,6 +98,17 @@ const makePastYearsMeanPrices = (lastMeanPricesBrute: object) => {
 	}
 
 	return lastMeanPrices
+}
+
+
+const formatSellOrders = (sellOrdersBrute: object) => {
+	const sellOrders = copyObject(sellOrdersBrute)
+	
+	for (const [key, value] of Object.entries(sellOrders)) {
+		sellOrders[key] = formatSellOrderYear(value)
+	}
+
+	return sellOrders
 }
 
 
@@ -156,9 +177,32 @@ const makeCompanyStr = (company: Company, tickerType: CategoryName) => {
 }
 
 
+const formatSellOrderYear = (sellOrderObj: any) => {
+	const { orders } = sellOrderObj
+
+	const formattedOrders = orders.map(order => {
+		const { ticker,	previousMeanPrice,	sellMeanPrice,	sellQuantity } = order
+		const [sellPrice, previousPrice] = [sellMeanPrice / 100, previousMeanPrice / 100]
+
+		const balanceStr = (sellPrice > previousPrice) ? 'lucro' :  'prejuízo'
+		const difference = (sellPrice - previousPrice)
+		const balance = (difference * sellQuantity)
+
+		const sellStr = `Venda de ${sellQuantity} ${ticker} ao preço médio de ${toBrazilianCurrency(sellPrice)}. Preço médio anterior: ${toBrazilianCurrency(previousPrice)}. Com um ${balanceStr} de ${toBrazilianCurrency(difference)} por unidade; total: ${toBrazilianCurrency(balance)}.`
+
+		return sellStr.toUpperCase()
+	})
+
+	return formattedOrders
+}
+
+
+
+
 export {
 	getMeanPricesAndSells,
 	makeMeanPriceLists,
 	makePastYearsMeanPrices,
+	formatSellOrders,
 }
 

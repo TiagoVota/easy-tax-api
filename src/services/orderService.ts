@@ -10,6 +10,7 @@ import {
 	formatBrokersData,
 } from './helpers/formatOrderHelper.js'
 import {
+	formatSellOrders,
 	getMeanPricesAndSells,
 	makeMeanPriceLists,
 	makePastYearsMeanPrices
@@ -49,14 +50,20 @@ const makeCreateOrderInfo = async () => {
 const makeOrdersIR  = async (userId: number) => {
 	const orders = await orderRepository.findByUser(userId)
 
-	const { meanPrices, meanPricesLastYears } = getMeanPricesAndSells(orders)
+	const {
+		meanPrices,
+		meanPricesLastYears,
+		sellOrders,
+	} = getMeanPricesAndSells(orders)
 
 	const actualMeanPrices = makeMeanPriceLists(meanPrices)
 	const pastYearsMeanPrices = makePastYearsMeanPrices(meanPricesLastYears)
+	const formattedSellOrders = formatSellOrders(sellOrders)
 
 	return {
 		pastYearsMeanPrices,
 		actualMeanPrices,
+		sellOrders: formattedSellOrders,
 	}
 }
 
