@@ -9,7 +9,11 @@ import {
 	formatTickersData,
 	formatBrokersData,
 } from './helpers/formatOrderHelper.js'
-import { getMeanPricesAndSells, makeMeanPriceLists } from './helpers/irHelper.js'
+import {
+	getMeanPricesAndSells,
+	makeMeanPriceLists,
+	makePastYearsMeanPrices
+} from './helpers/irHelper.js'
 
 import { InsertOrderInfo } from '../interfaces/orderInterface.js'
 
@@ -47,9 +51,13 @@ const makeOrdersIR  = async (userId: number) => {
 
 	const { meanPrices, meanPricesLastYears } = getMeanPricesAndSells(orders)
 
-	const meanPricesList = makeMeanPriceLists(meanPrices)
-	
-	return { meanPricesLastYears, meanPricesList }
+	const actualMeanPrices = makeMeanPriceLists(meanPrices)
+	const pastYearsMeanPrices = makePastYearsMeanPrices(meanPricesLastYears)
+
+	return {
+		pastYearsMeanPrices,
+		actualMeanPrices,
+	}
 }
 
 

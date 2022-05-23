@@ -17,16 +17,16 @@ const getMeanPricesAndSells = (ordersList: any[]) => {
 	ordersList.forEach(order => {
 		const actualBrokerName = order.broker.name
 		const actualTickerName = order.ticker.name
-		const actualDate = new Date(order.date)
+		const actualYear = new Date(order.date).getFullYear()
 
 		const isBuy = order.type.name === 'buy'
 		const haveNoOrder = Boolean(previousYear === -Infinity)
-		if (haveNoOrder) previousYear = actualDate.getFullYear()
-		const yearHaveChanged = Boolean(previousYear !== actualDate.getFullYear())
+		if (haveNoOrder) previousYear = actualYear
+		const yearHaveChanged = Boolean(previousYear !== actualYear)
 
 		if (yearHaveChanged) {
 			meanPricesLastYears[previousYear] = copyObject(meanPrices)
-			previousYear = actualDate.getFullYear()
+			previousYear = actualYear
 		}
 
 		if (!meanPrices[actualBrokerName]) meanPrices[actualBrokerName] = {
@@ -80,6 +80,17 @@ const makeMeanPriceLists = (meanPricesBrute: object) => {
 }
 
 
+const makePastYearsMeanPrices = (lastMeanPricesBrute: object) => {
+	const lastMeanPrices = copyObject(lastMeanPricesBrute)
+	
+	for (const [key, value] of Object.entries(lastMeanPrices)) {
+		lastMeanPrices[key] = makeMeanPriceLists(value)
+	}
+
+	return lastMeanPrices
+}
+
+
 const makeCorrection = () => {
 	const TRANSACTIONS_PERCENT_TAX = 0.03  // taxa de liquidação e emolumentos
 	const correctionValue = TRANSACTIONS_PERCENT_TAX / 100
@@ -91,9 +102,8 @@ const makeCorrection = () => {
 
 
 const makeBrokerStr = (brokerName: string, brokerCnpj: string) => {
-	const upperName = brokerName.toUpperCase()
 	const formattedCnpj = formatCnpj(brokerCnpj)
-	return `CUSTÓDIA NA CORRETORA ${upperName} CNPJ: ${formattedCnpj}.`
+	return `CUSTÓDIA NA CORRETORA ${brokerName} CNPJ: ${formattedCnpj}.`
 }
 
 const makeMeanPricesForBroker = (brokerStr: string, tickersList: any[]) => {
@@ -149,5 +159,6 @@ const makeCompanyStr = (company: Company, tickerType: CategoryName) => {
 export {
 	getMeanPricesAndSells,
 	makeMeanPriceLists,
+	makePastYearsMeanPrices,
 }
 
