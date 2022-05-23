@@ -9,6 +9,7 @@ import {
 	formatTickersData,
 	formatBrokersData,
 } from './helpers/formatOrderHelper.js'
+import { getMeanPricesAndSells, makeMeanPriceLists } from './helpers/irHelper.js'
 
 import { InsertOrderInfo } from '../interfaces/orderInterface.js'
 
@@ -40,6 +41,18 @@ const makeCreateOrderInfo = async () => {
 	return createOrderInfo
 }
 
+
+const makeOrdersIR  = async (userId: number) => {
+	const orders = await orderRepository.findByUser(userId)
+
+	const { meanPrices, meanPricesLastYears } = getMeanPricesAndSells(orders)
+
+	const meanPricesList = makeMeanPriceLists(meanPrices)
+	
+	return { meanPricesLastYears, meanPricesList }
+}
+
+
 const createOrder = async ({ user, order }: InsertOrderInfo) => {
 	await validateBroker(order.brokerId)
 	await validateTicker(order.tickerId)
@@ -55,6 +68,7 @@ const createOrder = async ({ user, order }: InsertOrderInfo) => {
 
 	return createdOrder
 }
+
 
 const validateBroker = async (brokerId: number) => {
 	const broker = await brokerRepository.findById(brokerId)
@@ -81,5 +95,6 @@ const validateType = async (typeId: number) => {
 export {
 	getOrders,
 	makeCreateOrderInfo,
+	makeOrdersIR,
 	createOrder,
 }

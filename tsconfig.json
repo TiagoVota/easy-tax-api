@@ -5,7 +5,10 @@
 		"allowSyntheticDefaultImports": true,
     "module": "es6",
     "moduleResolution": "node",
-    "outDir": "dist"
+    "outDir": "dist",
+		"lib": [
+			"ES2021.String"
+		]
   },
   "ts-node": {
     "esm": true

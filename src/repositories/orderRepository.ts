@@ -10,11 +10,19 @@ const findByUser = async (id: number) => {
 				id,
 			},
 		},
+		orderBy: {
+			date: 'asc',
+		},
 		include: {
 			broker: true,
-			ticker: true,
+			ticker: {
+				include: {
+					category: true,
+					company: true,
+				},
+			},
 			type: true,
-		}
+		},
 	})
 
 	return orders

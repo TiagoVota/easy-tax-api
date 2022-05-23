@@ -17,6 +17,10 @@ orderRouter.get(
 	'/buy-info',
 	orderController.getCreateOrderInfo
 )
+orderRouter.get(
+	'/view-ir',
+	orderController.getOrdersIR
+)
 
 orderRouter.post(
 	'/',
