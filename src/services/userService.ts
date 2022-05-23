@@ -4,13 +4,14 @@ import { encryptValue, isValidEncrypt } from '../utils/encryptor.js'
 import { generateToken } from '../utils/authorizations.js'
 import { formatTokenData } from './helpers/formatUserHelper.js'
 
+import { AuthUserData, User, UserData } from '../interfaces/userInterface.js'
+
 import {
 	ExistentUserError,
 	InvalidPasswordError,
+	NoUserByIdError,
 	NoUserError,
 } from '../errors/index.js'
-
-import { AuthUserData, User, UserData } from '../interfaces/userInterface.js'
 
 
 const createUser = async ({ name, email, password }: UserData) => {
@@ -62,8 +63,16 @@ const validatePassword = (password: string, hashPassword: string) => {
 	if (!isValidPassword) throw new InvalidPasswordError()
 }
 
+const validateUserById = async (userId: number) => {
+	const user = await userRepository.findById(userId)
+	if (!user) throw new NoUserByIdError(userId)
+
+	return user
+}
+
 
 export {
 	createUser,
 	AuthorizeUser,
+	validateUserById,
 }

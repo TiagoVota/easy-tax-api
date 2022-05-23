@@ -7,6 +7,7 @@ import NoBrokerError from './NoBrokerError.js'
 import NoOrderError from './NoOrderError.js'
 import NoTickerError from './NoTickerError.js'
 import NoTypeError from './NoTypeError.js'
+import NoUserByIdError from './NoUserByIdError.js'
 import NoUserError from './NoUserError.js'
 import SchemaError from './SchemaError.js'
 
@@ -21,6 +22,7 @@ export {
 	NoOrderError,
 	NoTickerError,
 	NoTypeError,
+	NoUserByIdError,
 	NoUserError,
 	SchemaError,
 }

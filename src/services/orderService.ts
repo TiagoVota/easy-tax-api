@@ -5,6 +5,8 @@ import {
 	orderRepository,
 } from '../repositories/index.js'
 
+import * as userService from './userService.js'
+
 import {
 	formatTickersData,
 	formatBrokersData,
@@ -15,8 +17,9 @@ import {
 	makeMeanPriceLists,
 	makePastYearsMeanPrices
 } from './helpers/irHelper.js'
+import { formatDate } from './helpers/dateHelper.js'
 
-import { InsertOrderInfo } from '../interfaces/orderInterface.js'
+import { InsertOrderInfo, Order } from '../interfaces/orderInterface.js'
 
 import {
 	DeleteOrderError,
@@ -78,12 +81,29 @@ const createOrder = async ({ user, order }: InsertOrderInfo) => {
 	const orderData = {
 		userId: user.id,
 		...order,
-		date:  new Date(order.date) || new Date()
+		date: formatDate(order.date)
 	}
 
 	const createdOrder = await orderRepository.create(orderData)
 
 	return createdOrder
+}
+
+
+const updateOrder = async (order: Order) => {
+	const existentOrder = await validateOrder(order.id)
+	validateUserOrder(order.userId, existentOrder.userId)
+	await validateBroker(order.brokerId)
+	await validateTicker(order.tickerId)
+	await validateType(order.typeId)
+	await userService.validateUserById(order.userId)
+
+	const updatedOrder = await orderRepository.update({
+		...order,
+		date: formatDate(order.date)
+	})
+
+	return updatedOrder
 }
 
 
@@ -135,5 +155,6 @@ export {
 	makeCreateOrderInfo,
 	makeOrdersIR,
 	createOrder,
+	updateOrder,
 	deleteOrder,
 }

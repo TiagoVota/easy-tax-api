@@ -1,6 +1,6 @@
 import prisma from '../database/database.js'
 
-import { CreateOrderData } from '../interfaces/orderInterface.js'
+import { CreateOrderData, Order } from '../interfaces/orderInterface.js'
 
 
 const findByUser = async (id: number) => {
@@ -49,6 +49,18 @@ const create = async (orderData: CreateOrderData) => {
 }
 
 
+const update = async (order: Order) => {
+	const updatedOrder = await prisma.order.update({
+		data: order,
+		where: {
+			id: order.id
+		},
+	})
+
+	return updatedOrder
+}
+
+
 const deleteOne = async (id: number) => {
 	const deletedOrder = await prisma.order.delete({
 		where: {
@@ -64,6 +76,7 @@ const orderRepository = {
 	findByUser,
 	findById,
 	create,
+	update,
 	deleteOne,
 }
 export {

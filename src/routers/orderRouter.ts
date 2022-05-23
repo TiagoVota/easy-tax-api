@@ -28,11 +28,12 @@ orderRouter.post(
 	orderController.createOrder
 )
 
-// orderRouter.put(
-// 	'/:orderId',
-// 	schemaValidation.bodyMiddleware(orderSchema),
-// 	orderController.createOrder
-// )
+orderRouter.put(
+	'/:orderId',
+	schemaValidation.paramsMiddleware(orderIdSchema),
+	schemaValidation.bodyMiddleware(orderSchema),
+	orderController.modifyOrder
+)
 
 orderRouter.delete(
 	'/:orderId',
