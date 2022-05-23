@@ -1,13 +1,16 @@
-import { Company } from '../../interfaces/companyInterface.js'
 import { copyObject } from '../../utils/objectHandler.js'
 import { formatCnpj } from './cnpjHelper.js'
 import { toBrazilianCurrency } from './currencyHelper.js'
 
+import { Company } from '../../interfaces/companyInterface.js'
+import { CategoryName } from '../../interfaces/categoryInterface.js'
+
 
 const getMeanPricesAndSells = (ordersList: any[]) => {
 	const { BUY_CORRECTION, SELL_CORRECTION } = makeCorrection()
-	
+
 	const meanPrices = {}
+
 	let previousYear = -Infinity
 	const meanPricesLastYears = {}
 
@@ -17,10 +20,11 @@ const getMeanPricesAndSells = (ordersList: any[]) => {
 		const actualDate = new Date(order.date)
 
 		const isBuy = order.type.name === 'buy'
-		const yearHaveChange = Boolean(previousYear !== actualDate.getFullYear())
-		const haveSomeOrder = Boolean(previousYear !== -Infinity)
+		const haveNoOrder = Boolean(previousYear === -Infinity)
+		if (haveNoOrder) previousYear = actualDate.getFullYear()
+		const yearHaveChanged = Boolean(previousYear !== actualDate.getFullYear())
 
-		if (yearHaveChange && haveSomeOrder) {
+		if (yearHaveChanged) {
 			meanPricesLastYears[previousYear] = copyObject(meanPrices)
 			previousYear = actualDate.getFullYear()
 		}
@@ -97,7 +101,7 @@ const makeMeanPricesForBroker = (brokerStr: string, tickersList: any[]) => {
 
 	tickersList.forEach(ticker => {
 		const { quantity, totalPrice, name, company, category } = ticker
-		const tickerType = category.name
+		const tickerType = category.name as CategoryName
 
 		const ordersStr = makeOrdersStr(name, totalPrice, quantity, tickerType)
 		const companyStr = makeCompanyStr(company, tickerType)
@@ -113,7 +117,7 @@ const makeOrdersStr = (
 	tickerName: string,
 	totalPrice: number,
 	quantity: number,
-	tickerType: string
+	tickerType: CategoryName
 ) => {
 	const companyType = {
 		'Stock': 'Ações',
@@ -129,7 +133,7 @@ const makeOrdersStr = (
 	return `${type} ${tickerName} // ${quantity} UNIDADES // CUSTO MÉDIO ${currencyValue}`
 }
 
-const makeCompanyStr = (company: Company, tickerType: string) => {
+const makeCompanyStr = (company: Company, tickerType: CategoryName) => {
 	const companyType = {
 		'Stock': 'Empresa',
 		'FII': 'Fundo',

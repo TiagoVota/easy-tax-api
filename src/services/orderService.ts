@@ -61,8 +61,8 @@ const createOrder = async ({ user, order }: InsertOrderInfo) => {
 	const orderData = {
 		userId: user.id,
 		...order,
+		date:  new Date(order.date) || new Date()
 	}
-	delete orderData.date
 
 	const createdOrder = await orderRepository.create(orderData)
 
