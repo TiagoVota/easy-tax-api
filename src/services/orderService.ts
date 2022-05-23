@@ -22,7 +22,7 @@ import { formatDate } from './helpers/dateHelper.js'
 import { InsertOrderInfo, Order } from '../interfaces/orderInterface.js'
 
 import {
-	DeleteOrderError,
+	ChangeOrderError,
 	NoBrokerError,
 	NoOrderError,
 	NoTickerError,
@@ -146,7 +146,7 @@ const validateOrder = async (orderId: number) => {
 }
 
 const validateUserOrder = (userId: number, userOrderId: number) => {
-	if (userId !== userOrderId) throw new DeleteOrderError(userId)
+	if (userId !== userOrderId) throw new ChangeOrderError(userId)
 }
 
 

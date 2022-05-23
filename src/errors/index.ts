@@ -1,5 +1,5 @@
 import AuthError from './AuthError.js'
-import DeleteOrderError from './DeleteOrderError.js'
+import ChangeOrderError from './ChangeOrderError.js'
 import ExistentUserError from './ExistentUserError.js'
 import HealthError from './HealthError.js'
 import InvalidPasswordError from './InvalidPasswordError.js'
@@ -14,7 +14,7 @@ import SchemaError from './SchemaError.js'
 
 export {
 	AuthError,
-	DeleteOrderError,
+	ChangeOrderError,
 	ExistentUserError,
 	HealthError,
 	InvalidPasswordError,
