@@ -5,5 +5,6 @@ type CompanyInsertData = Omit<Company, 'id'>
 
 
 export {
+	Company,
 	CompanyInsertData,
 }

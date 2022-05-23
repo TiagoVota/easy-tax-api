@@ -9,6 +9,12 @@ import {
 	formatTickersData,
 	formatBrokersData,
 } from './helpers/formatOrderHelper.js'
+import {
+	formatSellOrders,
+	getMeanPricesAndSells,
+	makeMeanPriceLists,
+	makePastYearsMeanPrices
+} from './helpers/irHelper.js'
 
 import { InsertOrderInfo } from '../interfaces/orderInterface.js'
 
@@ -17,6 +23,13 @@ import {
 	NoTickerError,
 	NoTypeError,
 } from '../errors/index.js'
+
+
+const getOrders = async (userId: number) => {
+	const orders = await orderRepository.findByUser(userId)
+
+	return orders
+}
 
 
 const makeCreateOrderInfo = async () => {
@@ -33,6 +46,28 @@ const makeCreateOrderInfo = async () => {
 	return createOrderInfo
 }
 
+
+const makeOrdersIR  = async (userId: number) => {
+	const orders = await orderRepository.findByUser(userId)
+
+	const {
+		meanPrices,
+		meanPricesLastYears,
+		sellOrders,
+	} = getMeanPricesAndSells(orders)
+
+	const actualMeanPrices = makeMeanPriceLists(meanPrices)
+	const pastYearsMeanPrices = makePastYearsMeanPrices(meanPricesLastYears)
+	const formattedSellOrders = formatSellOrders(sellOrders)
+
+	return {
+		pastYearsMeanPrices,
+		actualMeanPrices,
+		sellOrders: formattedSellOrders,
+	}
+}
+
+
 const createOrder = async ({ user, order }: InsertOrderInfo) => {
 	await validateBroker(order.brokerId)
 	await validateTicker(order.tickerId)
@@ -41,13 +76,14 @@ const createOrder = async ({ user, order }: InsertOrderInfo) => {
 	const orderData = {
 		userId: user.id,
 		...order,
+		date:  new Date(order.date) || new Date()
 	}
-	delete orderData.date
 
 	const createdOrder = await orderRepository.create(orderData)
 
 	return createdOrder
 }
+
 
 const validateBroker = async (brokerId: number) => {
 	const broker = await brokerRepository.findById(brokerId)
@@ -72,6 +108,8 @@ const validateType = async (typeId: number) => {
 
 
 export {
+	getOrders,
 	makeCreateOrderInfo,
+	makeOrdersIR,
 	createOrder,
 }
