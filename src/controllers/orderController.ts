@@ -77,9 +77,28 @@ const createOrder = async (
 }
 
 
+const removeOrder = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const user = res.locals.user as TokenInfo
+	const orderId = req.params.orderId
+
+	try {
+		const deletedOrder = await orderService.deleteOrder(Number(orderId), user.id)
+
+		return res.status(200).send(deletedOrder)
+
+	} catch (error) {
+		next(error)
+	}
+}
+
 export {
 	getUserOrders,
 	getCreateOrderInfo,
 	getOrdersIR,
 	createOrder,
+	removeOrder,
 }

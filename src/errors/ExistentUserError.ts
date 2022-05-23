@@ -10,4 +10,3 @@ class ExistentUserError extends ConflictError {
 
 
 export default ExistentUserError
-

@@ -10,4 +10,3 @@ class NoUserError extends NotFoundError {
 
 
 export default NoUserError
-

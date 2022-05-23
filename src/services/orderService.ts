@@ -19,7 +19,9 @@ import {
 import { InsertOrderInfo } from '../interfaces/orderInterface.js'
 
 import {
+	DeleteOrderError,
 	NoBrokerError,
+	NoOrderError,
 	NoTickerError,
 	NoTypeError,
 } from '../errors/index.js'
@@ -85,6 +87,16 @@ const createOrder = async ({ user, order }: InsertOrderInfo) => {
 }
 
 
+const deleteOrder = async (orderId: number, userId: number) => {
+	const order = await validateOrder(orderId)
+	validateUserOrder(userId, order.userId)
+
+	const deletedOrder = await orderRepository.deleteOne(orderId)
+
+	return deletedOrder
+}
+
+
 const validateBroker = async (brokerId: number) => {
 	const broker = await brokerRepository.findById(brokerId)
 	if (!broker) throw new NoBrokerError(brokerId)
@@ -106,10 +118,22 @@ const validateType = async (typeId: number) => {
 	return type
 }
 
+const validateOrder = async (orderId: number) => {
+	const order = await orderRepository.findById(orderId)
+	if (!order) throw new NoOrderError(orderId)
+
+	return order
+}
+
+const validateUserOrder = (userId: number, userOrderId: number) => {
+	if (userId !== userOrderId) throw new DeleteOrderError(userId)
+}
+
 
 export {
 	getOrders,
 	makeCreateOrderInfo,
 	makeOrdersIR,
 	createOrder,
+	deleteOrder,
 }

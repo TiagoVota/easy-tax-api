@@ -12,7 +12,12 @@ const orderSchema = Joi.object<BodyOrderData>({
 	date: Joi.date().required(),
 }).length(6)
 
+const orderIdSchema = Joi.object({
+	orderId: Joi.number().integer().min(0).required(),
+}).length(1)
+
 
 export {
 	orderSchema,
+	orderIdSchema,
 }
