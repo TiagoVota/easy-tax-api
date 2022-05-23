@@ -10,6 +10,10 @@ import { orderSchema } from '../schemas/orderSchema.js'
 const orderRouter = Router()
 
 orderRouter.get(
+	'/',
+	orderController.getUserOrders
+)
+orderRouter.get(
 	'/buy-info',
 	orderController.getCreateOrderInfo
 )

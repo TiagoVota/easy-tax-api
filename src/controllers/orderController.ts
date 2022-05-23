@@ -6,6 +6,24 @@ import { TokenInfo } from '../interfaces/userInterface.js'
 import { BodyOrderData } from '../interfaces/orderInterface.js'
 
 
+const getUserOrders = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const user = res.locals.user as TokenInfo
+
+	try {
+		const createOrderInfo = await orderService.getOrders(user.id)
+
+		return res.status(200).send(createOrderInfo)
+
+	} catch (error) {
+		next(error)
+	}
+}
+
+
 const getCreateOrderInfo = async (
 	req: Request,
 	res: Response,
@@ -42,6 +60,7 @@ const createOrder = async (
 
 
 export {
+	getUserOrders,
 	getCreateOrderInfo,
 	createOrder,
 }

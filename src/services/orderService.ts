@@ -19,6 +19,13 @@ import {
 } from '../errors/index.js'
 
 
+const getOrders = async (userId: number) => {
+	const orders = await orderRepository.findByUser(userId)
+
+	return orders
+}
+
+
 const makeCreateOrderInfo = async () => {
 	const tickersData = await tickerRepository.findAll()
 	const typesData = await typeRepository.findAll()
@@ -72,6 +79,7 @@ const validateType = async (typeId: number) => {
 
 
 export {
+	getOrders,
 	makeCreateOrderInfo,
 	createOrder,
 }
